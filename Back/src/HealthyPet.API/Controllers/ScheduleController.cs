@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using HealthyPet.API.Data;
 using HealthyPet.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,42 +14,23 @@ namespace HealthyPet.API.Controllers
     [Route("api/[controller]")]
     public class ScheduleController : ControllerBase
     {
-        public ScheduleController(ILogger<ScheduleController> logger)
+        private readonly DataContext _context;
+        public ScheduleController(DataContext context)
         {
+            _context = context;
 
         }
-        public IEnumerable<VetConsult> _vetConsult = new VetConsult[]{
-            new VetConsult(){
-                VetConsultId = 1,
-                Local = "Rua 123, bairro Novo",
-                VetConsultDate = DateTime.Now.AddDays(2).ToString(),
-                Type = "Normal",
-                Veterinarian = "Maria",
-                Phone = "(11) 00000000",
-                ProfilePhoto = "foto.png"
-            },
-
-            new VetConsult(){
-                VetConsultId = 2,
-                Local = "Rua 123, bairro das Flores",
-                VetConsultDate = DateTime.Now.AddDays(2).ToString(),
-                Type = "Normal",
-                Veterinarian = "Joana",
-                Phone = "(11) 00000000",
-                ProfilePhoto = "foto1.png"
-            },
-            };
-
+        
         [HttpGet]
         public IEnumerable<VetConsult> Get()
         {
-           return _vetConsult;
+           return _context.VetConsults;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<VetConsult> GetById(int id)
+        public VetConsult GetById(int id)
         {
-           return _vetConsult.Where(ev => ev.VetConsultId == id);
+           return _context.VetConsults.FirstOrDefault(ev => ev.VetConsultId == id);
         }
 
         [HttpPost]
